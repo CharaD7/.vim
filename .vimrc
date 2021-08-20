@@ -117,7 +117,7 @@ set mouse-=a               " disable custom mouse in vim (so that we can select
 "if has("mouse")
 "    set mouse=a             " control cursor with the mouse
 "endif
-"set guifont=FiraCode-Retina:h12
+set guifont=FiraCode-Retina:h14
 syntax on                   " syntax highlighting
 
 set encoding=utf-8
@@ -212,92 +212,7 @@ let g:LanguageClient_serverCommands = {
     \ 'vue': ['vls']
     \ }
 
-
-" floating window size ratio
-let g:fzf_preview_floating_window_rate = 0.9
-
-" fzf window position settings
-let g:fzf_preview_direct_window_option = ''
-
-" fzf command default options
-let g:fzf_preview_default_fzf_options = { '--reverse': v:true, '--preview-window': 'wrap' }
-
-" Add fzf quit mapping
-let g:fzf_preview_quit_map = 1
-
-" jump to the buffers by default, when possible
-let g:fzf_preview_buffers_jump = 0
-
-" Commands used for fzf preview.
-" The file name selected by fzf becomes {}
-let g:fzf_preview_command = 'cat'                               " Not installed bat
-" let g:fzf_preview_command = 'bat --color=always --plain {-1}' " Installed bat
-
-" g:fzf_binary_preview_command is executed if this command succeeds, and g:fzf_preview_command is executed if it fails
-let g:fzf_preview_if_binary_command = '[[ "$(file --mime {})" =~ binary ]]'
-
-" Commands used for binary file
-let g:fzf_binary_preview_command = 'echo "{} is a binary file"'
-
-" Commands used to get the file list from project
-let g:fzf_preview_filelist_command = 'git ls-files --exclude-standard'               " Not Installed ripgrep
-" let g:fzf_preview_filelist_command = 'rg --files --hidden --follow --no-messages -g \!"* *"' " Installed ripgrep
-
-" Commands used to get the file list from git repository
-let g:fzf_preview_git_files_command = 'git ls-files --exclude-standard'
-
-" Commands used to get the file list from current directory
-let g:fzf_preview_directory_files_command = 'rg --files --hidden --follow --no-messages -g \!"* *"'
-
-" Commands used to get the git status file list
-let g:fzf_preview_git_status_command = 'git -c color.status=always status --short --untracked-files=all'
-
-" Commands used for git status preview.
-let g:fzf_preview_git_status_preview_command =  "[[ $(git diff --cached -- {-1}) != \"\" ]] && git diff --cached --color=always -- {-1} || " .
-\ "[[ $(git diff -- {-1}) != \"\" ]] && git diff --color=always -- {-1} || " .
-\ g:fzf_preview_command
-
-" Commands used for project grep
-let g:fzf_preview_grep_cmd = 'rg --line-number --no-heading --color=never'
-
-" MRU and MRW cache directory
-let g:fzf_preview_cache_directory = expand('~/.cache/vim/fzf_preview')
-
-" If this value is not 0, disable mru and mrw
-let g:fzf_preview_disable_mru = 0
-
-" Limit of the number of files to be saved by mru
-let g:fzf_preview_mru_limit = 1000
-
-" Commands used for current file lines
-" let g:fzf_preview_lines_command = 'cat -n'                                " Not Installed bat
-let g:fzf_preview_lines_command = 'bat --color=always --plain --number' " Installed bat
-
-" Commands used for preview of the grep result
-let g:fzf_preview_grep_preview_cmd = expand('<sfile>:h:h') . '/bin/preview_fzf_grep'
-
-" Cache directory for mru and mrw
-let g:fzf_preview_cache_directory = expand('~/.cache/vim/fzf_preview')
-
-" Keyboard shortcuts while fzf preview is active
-let g:fzf_preview_preview_key_bindings = ''
-" let g:fzf_preview_preview_key_bindings = 'ctrl-d:preview-page-down,ctrl-u:preview-page-up,?:toggle-preview'
-
-" Specify the color of fzf
-let g:fzf_preview_fzf_color_option = ''
-
-" Set the processes when selecting an element with fzf
-let g:fzf_preview_custom_processes = {}
-" For example, set split to ctrl-s
-" let g:fzf_preview_custom_processes['open-file'] = fzf_preview#remote#process#get_default_processes('open-file')
-" on coc extensions
-" let g:fzf_preview_custom_processes['open-file'] = fzf_preview#remote#process#get_default_processes('open-file', 'coc')
-" let g:fzf_preview_custom_processes['open-file']['ctrl-s'] = g:fzf_preview_custom_processes['open-file']['ctrl-x']
-" call remove(g:fzf_preview_custom_processes['open-file'], 'ctrl-x')
-
-" Use as fzf preview-window option
-let g:fzf_preview_fzf_preview_window_option = ''
-" let g:fzf_preview_fzf_preview_window_option = 'up:30%'
+let g:fzf_preview_window = ['right:50%', 'ctrl-/']
 
 " Use vim-devicons
 let g:fzf_preview_use_dev_icons = 1
@@ -316,28 +231,13 @@ let g:fzf_preview_dev_icons_limit = 5000
 " The theme used in the bat preview
 let g:fzf_preview_preview_bat_theme = 'ansi'
 
+command! -bang -nargs=? -complete=dir Files
+    \ call fzf#vim#files(<q-args>, {'options': ['--layout=reverse', '--info=inline', '--preview', '~/.vim/plugged/fzf.vim/bin/preview.sh {}']}, <bang>0)
 
-" Example: Exclude filename with FzfPreviewProjectGrep
-nnoremap <leader>g :<C-u>FzfPreviewProjectGrep --add-fzf-arg=--nth=3<Space>
-" nnoremap <Leader>g :<C-u>CocCommand fzf-preview.ProjectGrep --add-fzf-arg=--nth=3<Space>
-
-" Example: Reuse last query for project grep.
-nnoremap <leader>G :<C-u>FzfPreviewProjectGrep . --resume<Space>
-" nnoremap <Leader>G :<C-u>CocCommand fzf-preview.ProjectGrep . --resume<Space>
 
 " Setting the shell
 set shell=/bin/zsh
 let $SHELL = "/bin/zsh"
-
-augroup fzf_preview
-  autocmd!
-  autocmd User fzf_preview#rpc#initialized call s:fzf_preview_settings() " fzf_preview#remote#initialized or fzf_preview#coc#initialized
-augroup END
-
-function! s:fzf_preview_settings() abort
-  let g:fzf_preview_command = 'COLORTERM=truecolor ' . g:fzf_preview_command
-  let g:fzf_preview_grep_preview_cmd = 'COLORTERM=truecolor ' . g:fzf_preview_grep_preview_cmd
-endfunction
 
 " autocmd VimEnter * call vista#RunForNearestMethodOrFunction()
 
@@ -365,26 +265,6 @@ autocmd FileType apache set commentstring=#\ %s
 let g:user_emmet_mode='a'    "enable all function in all mode.
 let g:user_emmet_leader_key='<C-N>'
 
-" Sets a status line. If in a Git repository, shows the current branch.
-" Also shows the current file name, line and column number.
-if has('statusline')
-    set laststatus=2
-
-    " Broken down into easily includeable segments
-    set statusline=%<%f\                     " Filename
-    set statusline+=%w%h%m%r                 " Options
-    set statusline+=%{fugitive#statusline()} " Git Hotness
-    set statusline+=\ [%{&ff}/%Y]            " Filetype
-    set statusline+=\ [%{getcwd()}]          " Current dir
-    set statusline+=%=%-14.(%l,%c%V%)\ %p%%  " Right aligned file nav info
-
-    " Settings for vim syntastic
-    set statusline+=%#warningmsg#
-    set statusline+=%{SyntasticStatuslineFlag()}
-    set statusline+=%*
-endif
-" }
-
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
@@ -399,7 +279,7 @@ let g:syntastic_always_populate_loc_list = 1
 
 
 " NERDTree trigger
-map <C-e> :NERDTreeToggle<CR>
+map <leader>e :NERDTreeToggle<CR>
 nnoremap <leader>n :NERDTreeFocus<CR>
 nnoremap <C-t> :NERDTree<CR>
 nnoremap <S-f> :NERDTreeFind<CR>
@@ -481,7 +361,7 @@ let g:airline_theme= 'gruvbox'
 
 " Experimental {
 " Search and Replace
-nmap <Leader>s :%s//g<Left><Left>
+nmap <leader>s :%s//g<Left><Left>
 " }
 
 
@@ -571,7 +451,9 @@ augroup END
 
 " Keybindings {
 " Save file
-nnoremap <leader>w :w<CR>
+nmap <leader>w :w<CR>
+vmap <leader>w :w<CR>
+" nnoremap <leader>w :w<CR>
 "Copy and paste from system clipboard
 vmap <leader>y "+y
 vmap <leader>d "+d
@@ -611,57 +493,18 @@ set updatetime=300
 " Don't pass messages to |ins-completion-menu|.
 set shortmess+=c
 
+
+" Always show the signcolumn, otherwise it would shift the text each time
+set signcolumn=yes
+
 " Always show the signcolumn, otherwise it would shift the text each time
 " diagnostics appear/become resolved.
-if has("nvim-0.5.0") || has("patch-8.1.1564")
+" if has("nvim-0.5.0") || has("patch-8.1.1564")
   " Recently vim can merge signcolumn and number column into one
-  set signcolumn=number
-else
-  set signcolumn=yes
-endif
-
-" Default rules for matching in pear-tree:
-let g:pear_tree_pairs = {
-            \ '(': {'closer': ')'},
-            \ '[': {'closer': ']'},
-            \ '{': {'closer': '}'},
-            \ "'": {'closer': "'"},
-            \ '"': {'closer': '"'},
-            \ '/**': {'closer': '**/'},
-            \ '<!--': {'closer': '-->'}
-            \ }
-" See pear-tree/after/ftplugin/ for filetype-specific matching rules
-
-" Pear Tree is enabled for all filetypes by default:
-let g:pear_tree_ft_disabled = []
-
-" Pair expansion is dot-repeatable by default:
-let g:pear_tree_repeatable_expand = 1
-
-" Smart pairs are disabled by default:
-let g:pear_tree_smart_openers = 0
-let g:pear_tree_smart_closers = 0
-let g:pear_tree_smart_backspace = 0
-
-" If enabled, smart pair functions timeout after 60ms:
-let g:pear_tree_timeout = 60
-
-" Automatically map <BS>, <CR>, and <Esc>
-" let g:pear_tree_map_special_keys = 1
-
-" Default mappings:
-" imap <BS> <Plug>(PearTreeBackspace)
-" imap <CR> <Plug>(PearTreeExpand)
-" imap <Esc> <Plug>(PearTreeFinishExpansion)
-" Pear Tree also makes <Plug> mappings for each opening and closing string.
-"     :help <Plug>(PearTreeOpener)
-"     :help <Plug>(PearTreeCloser)
-
-" Not mapped by default:
-" <Plug>(PearTreeSpace)
-" <Plug>(PearTreeJump)
-" <Plug>(PearTreeExpandOne)
-" <Plug>(PearTreeJNR)
+" set signcolumn=number
+" else
+" set signcolumn=yes
+" endif
 
 
 " Default highlighting (see help :highlight and help :highlight-link)
@@ -715,8 +558,12 @@ nnoremap  <silent> <s-tab>  :if &modifiable && !&readonly && &modified <CR> :wri
 let g:buftabline_numbers = 1
 
 " Vim Commentary
-nnoremap <C-/> :Commentary<CR>
-vnoremap <C-/> :Commentary<CR>
+" nnoremap <C-/> :Commentary<CR>
+nmap <leader>/ :Commentary<CR>
+nnoremap <leader>/ :Commentary<CR>
+vmap <leader>/ :Commentary<CR>
+vnoremap <leader>/ :Commentary<CR>
+" vnoremap <C-/> :Commentary<CR>
 
 " Using supertabs and previews for youcompleteme
 let g:SuperTabClosePreviewOnPopupClose = 1
