@@ -5,16 +5,24 @@ A vim terminal configuration for alx-students
 
 * Compile vim with Python support.
   - Clone vim from the [official github page](https://github.com/vim/vim.git)
-  - Change directory to cloned directory and compile with python support using `./configure --enable-pythoninterp --prefix=/usr`
+  - Change directory to cloned directory and compile with python support using the below command:
+      - ```bash
+       sudo ./configure --with-features=huge \
+       --enable-multibyte \
+       --enable-pythoninterp=yes \
+       --with-python-config-dir=/usr/lib/python2.7/config-x86_64-linux-gnu/ \  # pay attention here check directory correct \
+       --enable-python3interp=yes \
+       --with-python3-config-dir=/usr/lib/python3.5/config-3.5m-x86_64-linux-gnu/ \  # pay attention here check directory correct \
+       --enable-gui=gtk2 \
+       --enable-cscope \ 
+       --prefix=/usr/local/
+      
+       sudo make VIMRUNTIMEDIR=/usr/local/share/vim/vim81 # ensure this path is correct```
   - Make and install using `make  && sudo make install`
 
 * Clone the repo to your home directory and run `vim`.
 
-* On launch, Type the following command as is and hit enter.
-
-```
-:PlugInstall
-```
+* On launch, plugins will start to autoinstall.
 
 Hit **q** after installation is done to close installation tab and use vim as you wish.
 
