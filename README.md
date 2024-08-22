@@ -3,6 +3,11 @@ A vim terminal configuration for alx-students
 
 ### Steps to install and configure
 
+* Compile vim with Python support.
+  - Clone vim from the [official github page](https://github.com/vim/vim.git)
+  - Change directory to cloned directory and compile with python support using `./configure --enable-pythoninterp --prefix=/usr`
+  - Make and install using `make  && sudo make install`
+
 * Clone the repo to your home directory and run `vim`.
 
 * On launch, Type the following command as is and hit enter.
