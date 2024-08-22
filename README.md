@@ -1,25 +1,11 @@
-# alx-vim-config
+# VIM Config
 A vim terminal configuration for alx-students
 
 ### Steps to install and configure
 
-* Clone the repo.
-* Copy or move the .vimrc file to your root directory. 
-* Enter the following commands to get started.
+* Clone the repo to your home directory and run `vim`.
 
-=>$ 
-```
-mkdir .vim
-```
-
-
-=>$
-```
-vim .vimrc
-```
-
-
-The above ```vim .vimrc``` command will launch vim to read the configuration file. On launch, Type the following command as is and hit enter.
+* On launch, Type the following command as is and hit enter.
 
 ```
 :PlugInstall
